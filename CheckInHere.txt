@@ -2,15 +2,18 @@ Xuetao Hong xh910@nyu.edu
 BOlei Zhang bz825@nyu.edu
 Yuqi Zhang yz3330@nyu.edu
 Yue Shao    ys2612@nyu.edu
+<<<<<<< Updated upstream
 <<<<<<< HEAD
 Junlin Liu jl7659@nyu.edu
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
 Yufei Wang  yw2625@nyu.edu
 Junlin Liu jl7659@nyu.edu
-=======
 
+<<<<<<< Updated upstream
 >>>>>>> origin/master
 <<<<<<< HEAD
 
@@ -30,3 +33,5 @@ junlin liu lalalala
 Junlin Liu jl7659@nyu.edu
 >>>>>>> origin/master
 >>>>>>> origin/master
+=======
+>>>>>>> Stashed changes
