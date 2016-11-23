@@ -13,5 +13,9 @@ Junlin Liu jl7659@nyu.edu
 >>>>>>> origin/master
 =======
 Junlin Liu jl7659@nyu.edu
+<<<<<<< HEAD
 >>>>>>> origin/master
+>>>>>>> origin/master
+=======
+junlin liu lalalala
 >>>>>>> origin/master
