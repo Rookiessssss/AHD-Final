@@ -5,4 +5,8 @@ Yuqi Zhang yz3330@nyu.edu
 =======
 Yue Shao    ys2612@nyu.edu
 
+<<<<<<< HEAD
+>>>>>>> origin/master
+=======
+Junlin Liu jl7659@nyu.edu
 >>>>>>> origin/master
