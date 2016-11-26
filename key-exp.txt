@@ -38,7 +38,7 @@ addi $11,$11,4
 addi $12,$12,1
 bne $10,$13,loop4
 subi $10,$10,104
-loop 4:bne $11,$14,,loop5
+loop 4:bne $11,$14,loop5
 subi $11,$11,16
 loop 5:bne $12,$15,loop2
 addi $1,$4,0
