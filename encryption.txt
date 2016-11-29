@@ -11,7 +11,7 @@ nor $3,$3,$5
 nor $4,$4,$6
 nor $5,$6,$5
 nor $3,$4,$6
-nor $5,$6,$3//A xor B
+nor $5,$6,$6//A xor B
 loop 2:
 shl $6,$6,1
 addi $7,$7,1
@@ -22,7 +22,7 @@ nor $3,$3,$5
 nor $4,$4,$6
 nor $5,$6,$5
 nor $3,$4,$6
-nor $5,$6,$4//B xor A 
+nor $5,$6,$6//B xor A 
 loop 3:
 shl $6,$6,1
 addi $8,$8,1
