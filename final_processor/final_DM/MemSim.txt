@@ -1,0 +1,7 @@
+restart
+force memread 0 0, 1 20ns,0 40ns,1 60ns
+force memwrite 1 0, 0 20ns,1 40ns,0 60ns
+force addr 0x00000001 0,0x00000001 20ns, 0x00000010 40ns, 0x00000010 60ns
+force datain 0x00000019 0,0x00000015 40ns
+
+dataout delay 6.822ns
