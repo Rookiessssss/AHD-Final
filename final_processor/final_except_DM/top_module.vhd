@@ -11,11 +11,13 @@ PORT(
 		addr: IN STD_LOGIC_VECTOR(25 DOWNTO 0);
 		inst: IN STD_LOGIC_VECTOR(31 DOWNTO 0);--should be removed later
 		
+		--test signal
+		aluo, rso, rto: OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
       
 		memread: OUT STD_LOGIC;--should be removed later
 		memwrite: OUT STD_LOGIC;--should be removed later
 		
-		
+		 
 	   rs,rt,rd: IN STD_LOGIC_VECTOR(4 DOWNTO 0);--should be removed later
 
 		data_out: IN STD_LOGIC_VECTOR(31 DOWNTO 0)--should be removed later
@@ -25,7 +27,7 @@ end top_module;
 architecture Behavioral of top_module is
 
 COMPONENT rf32x32
-PORT(clk: IN STD_LOGIC;
+PORT(clk,clr: IN STD_LOGIC;
      readwrite: IN STD_LOGIC;
 	  rs,rt,rd: IN STD_LOGIC_VECTOR(4 DOWNTO 0);
      datain: IN STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -102,7 +104,7 @@ decoder: decoder32bit PORT MAP(inst=>inst, jump=>jump, readwrite=>readwrite,
 memtoreg=>memtoreg, regdst=>regdst, shiftlr=>shiftlr, alusrc=>alusrc, func=>func, 
 memread=>memread, memwrite=>memwrite, halt=>halt);
 
-rf: rf32x32 PORT MAP(clk=>clk, readwrite=>readwrite, rs=>rs, rd=>rdin, rt=>rt, 
+rf: rf32x32 PORT MAP(clk=>clk,clr=>clr, readwrite=>readwrite, rs=>rs, rd=>rdin, rt=>rt, 
 datain=>smux_out, rs_data=>rs_out, rt_data=>rt_out);
 
 alu: alu32bit PORT MAP(din0=>rs_out, din1=>alusrc_out, func=>func, dout=>alu_out);
@@ -189,6 +191,10 @@ END IF;
 
 END PROCESS; 
 
+--test signal
+aluo<=alu_out;
+rso<=rs_out;
+rto<=rt_out;
 
 end Behavioral;
 

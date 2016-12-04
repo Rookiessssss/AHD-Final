@@ -2,7 +2,7 @@
 -- Company: 
 -- Engineer:
 --
--- Create Date:   16:07:44 12/03/2016
+-- Create Date:   16:38:51 12/03/2016
 -- Design Name:   
 -- Module Name:   E:/ise/final_processor/top_module_tb.vhd
 -- Project Name:  final_processor
@@ -37,7 +37,7 @@ ENTITY top_module_tb IS
 END top_module_tb;
  
 ARCHITECTURE behavior OF top_module_tb IS 
-TYPE MARRAY IS ARRAY(0 to 31) OF STD_LOGIC_VECTOR(31 DOWNTO 0);
+ TYPE MARRAY IS ARRAY(0 to 31) OF STD_LOGIC_VECTOR(31 DOWNTO 0);
 
 CONSTANT im: MARRAY:=(
 "00000100000000010000000000000010", 
@@ -76,6 +76,9 @@ x"00000000",x"00000000"
          counter : OUT  std_logic_vector(31 downto 0);
          addr : IN  std_logic_vector(25 downto 0);
          inst : IN  std_logic_vector(31 downto 0);
+         aluo : OUT  std_logic_vector(31 downto 0);
+         rso : OUT  std_logic_vector(31 downto 0);
+         rto : OUT  std_logic_vector(31 downto 0);
          memread : OUT  std_logic;
          memwrite : OUT  std_logic;
          rs : IN  std_logic_vector(4 downto 0);
@@ -98,6 +101,9 @@ x"00000000",x"00000000"
 
  	--Outputs
    signal counter : std_logic_vector(31 downto 0);
+   signal aluo : std_logic_vector(31 downto 0);
+   signal rso : std_logic_vector(31 downto 0);
+   signal rto : std_logic_vector(31 downto 0);
    signal memread : std_logic;
    signal memwrite : std_logic;
 
@@ -105,7 +111,6 @@ x"00000000",x"00000000"
    constant clk_period : time := 50 ns;
  
 BEGIN
-
  inst<=im(CONV_INTEGER(counter(4 DOWNTO 0)));
  rs<=inst(25 DOWNTO 21);
  rt<=inst(20 DOWNTO 16);
@@ -118,6 +123,9 @@ BEGIN
           counter => counter,
           addr => addr,
           inst => inst,
+          aluo => aluo,
+          rso => rso,
+          rto => rto,
           memread => memread,
           memwrite => memwrite,
           rs => rs,
@@ -141,8 +149,9 @@ BEGIN
    begin		
       -- hold reset state for 100 ns.
       wait for 100 ns;	
-		clr<='1';
-		data_out<=x"00001234";
+			clr<='1';
+			data_out<=x"00000005";
+
       wait for clk_period*10;
 
       -- insert stimulus here 
