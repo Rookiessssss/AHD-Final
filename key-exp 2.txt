@@ -35,15 +35,14 @@ addi $2,$7,0
 addi $6,$7,0
 sw $4,0($10)
 sw $6,0($11)
-addi $10,$10,4
-addi $11,$11,4
+addi $10,$10,1
+addi $11,$11,1
 addi $12,$12,1
 bne $10,$13,loop4
-subi $10,$10,104
+subi $10,$10,26
 loop 4:bne $11,$14,loop5
-subi $11,$11,16
+subi $11,$11,4
 loop 5:bne $12,$15,loop2
-addi $1,$4,0
 halt
 
 
