@@ -25,14 +25,14 @@ IF (clr = '0') THEN
 	 skey(i)<=(OTHERS=>'0');
   END LOOP;
 ELSIF(clk'EVENT AND clk='1')THEN
-  IF(memwrite='1' AND memread='0')THEN skey(CONV_INTEGER(addr))<=datain;
+  IF(memwrite='1' AND memread='0')THEN skey(CONV_INTEGER(addr(6 DOWNTO 0)))<=datain;
   END IF;
 END IF;
 END PROCESS;
 
 PROCESS(memread,memwrite,skey,addr) BEGIN
 IF(memread='1' AND memwrite='0')THEN
-  dataout<=skey(CONV_INTEGER(addr));
+  dataout<=skey(CONV_INTEGER(addr(6 DOWNTO 0)));
 ELSE
   dataout<=x"ffffffff";
 END IF;
