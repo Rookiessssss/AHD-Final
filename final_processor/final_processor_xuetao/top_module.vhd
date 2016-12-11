@@ -7,12 +7,13 @@ entity top_module is
 PORT( 
       clr: IN STD_LOGIC;
       clk: IN STD_LOGIC;
-		
+		--only clear registers file
+		clr_rf_in: IN STD_LOGIC;
+		--jump to key,enc,dec
+		jinst: IN STD_LOGIC_VECTOR(2 DOWNTO 0);
 		
 		--test signal
 		aluo, rso, rto,dmo: OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-      
-		
 		--this is for IM 
 	   rs,rt,rd: IN STD_LOGIC_VECTOR(4 DOWNTO 0);--should be removed later
 	   counter: OUT STD_LOGIC_VECTOR(31 DOWNTO 0);--should be removed later
@@ -37,6 +38,7 @@ COMPONENT pc32bit
 PORT(clr: IN STD_LOGIC;
      clk: IN STD_LOGIC;
 	  din: IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+	  jinst: IN STD_LOGIC_VECTOR(2 DOWNTO 0);
 	  dout: OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
 );
 END COMPONENT;
@@ -102,6 +104,9 @@ SIGNAL func: STD_LOGIC_VECTOR(2 DOWNTO 0);
 SIGNAL memread: STD_LOGIC;
 SIGNAL memwrite: STD_LOGIC;
 
+--only clear registers file
+SIGNAL clr_rf: STD_LOGIC;
+
 SIGNAL rdin: STD_LOGIC_VECTOR(4 DOWNTO 0);
 
 
@@ -112,13 +117,15 @@ SIGNAL uimm_out,imm_out, alu_out, shift_out, smux_out, alusrc_out, mmux_out, rs_
  
 
 begin
-pc: pc32bit PORT MAP(clr=>clr, clk=>clk, din=>haltmux_out, dout=>pc_out);
+
+
+pc: pc32bit PORT MAP(clr=>clr, clk=>clk, din=>haltmux_out,jinst=>jinst, dout=>pc_out);
 
 decoder: decoder32bit PORT MAP(inst=>inst, jump=>jump, readwrite=>readwrite, 
 memtoreg=>memtoreg, regdst=>regdst, shiftlr=>shiftlr, alusrc=>alusrc, func=>func, 
 memread=>memread, memwrite=>memwrite, halt=>halt);
 
-rf: rf32x32 PORT MAP(clk=>clk,clr=>clr, readwrite=>readwrite, rs=>rs, rd=>rdin, rt=>rt, 
+rf: rf32x32 PORT MAP(clk=>clk,clr=>clr_rf, readwrite=>readwrite, rs=>rs, rd=>rdin, rt=>rt, 
 datain=>smux_out, rs_data=>rs_out, rt_data=>rt_out);
 
 alu: alu32bit PORT MAP(din0=>rs_out, din1=>alusrc_out, func=>func, dout=>alu_out);
@@ -207,6 +214,9 @@ END IF;
 
 
 END PROCESS; 
+
+--only clear registers file
+clr_rf <= clr AND clr_rf_in;
 
 --test signal
 aluo<=alu_out;
