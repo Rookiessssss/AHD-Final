@@ -115,13 +115,13 @@ BEGIN
 		clr_rf_in<='0';
 		switch<="001000";
 		
---		wait for 330000 ns;
---		clr_rf_in<='0';
---		jinst<="010";
---		wait for 100 ns;
---		clr_rf_in<='1';
---		jinst<="000";
-
+		wait for 500000 ns;
+		clr_rf_in<='1';
+		jinst<="100";
+		wait for 100 ns;
+		clr_rf_in<='0';
+		jinst<="000";
+ 
 
       -- insert stimulus here 
 
