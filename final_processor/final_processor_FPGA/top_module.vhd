@@ -16,7 +16,8 @@ PORT(
 		an : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
 		seg : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
 		--test signal
-		--aluo, rso, rto,dmo: OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+		--aluo, rso, rto,dmo,insto,counter: OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
+		
 		--this is for IM 
 	   --rs,rt,rd: IN STD_LOGIC_VECTOR(4 DOWNTO 0)--should be removed later
 		
@@ -128,7 +129,7 @@ SIGNAL uimm_out,imm_out, alu_out, shift_out, smux_out, alusrc_out, mmux_out, rs_
 SIGNAL inst : STD_LOGIC_VECTOR(31 DOWNTO 0);
 
 --SSD 
-signal clk_div: STD_LOGIC_VECTOR(19 DOWNTO 0);
+signal clk_div: STD_LOGIC_VECTOR(20 DOWNTO 0);
 signal ac: STD_LOGIC_VECTOR(3 DOWNTO 0);
 signal s:STD_LOGIC_VECTOR(2 DOWNTO 0);
 signal sdout: STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -139,14 +140,14 @@ signal clk: STD_LOGIC;
 begin
 clk<= clk_div(2);
 --SSD
-s <= clk_div(19 DOWNTO 17);
+s <= clk_div(20 DOWNTO 18);
 
 --clock divider
 PROCESS (clr, clk100mhz)  BEGIN
-  IF (clr='0') THEN clk_div <= "00000000000000000000";
+  IF (clr='0') THEN clk_div <= "000000000000000000000";
   ELSIF (clk100mhz'EVENT AND clk100mhz='1') THEN 
-   IF (clk_div < "11111000000000000000") Then clk_div <= clk_div + 1 ;
-	Else clk_div <= "00000000000000000000";
+   IF (clk_div < "111111000000000000000") Then clk_div <= clk_div + 1 ;
+	Else clk_div <= "000000000000000000000";
 	END IF;
   END IF;
 END PROCESS;
@@ -201,7 +202,7 @@ datain=>smux_out, rs_data=>rs_out, rt_data=>rt_out);
 
 alu: alu32bit PORT MAP(din0=>rs_out, din1=>alusrc_out, func=>func, dout=>alu_out);
 
-shift: shift32bit PORT MAP(shiftlr=>inst(3),din=>rs_out, imm=>inst(15 DOWNTO 0), dout=>shift_out);
+shift: shift32bit PORT MAP(shiftlr=>inst(27),din=>rs_out, imm=>inst(15 DOWNTO 0), dout=>shift_out);
 
 mem: mem128x32 PORT MAP(addr=>alu_out, datain=>rt_out, switch=>switch, led_out=>sdout, memread=>memread, memwrite=>memwrite, dataout=>data_out,clk=>clk,clr=>clr);
 
@@ -286,13 +287,15 @@ END IF;
 END PROCESS; 
 
 --only clear registers file
-clr_rf <= clr AND clr_rf_in;
+clr_rf <= clr AND (NOT clr_rf_in);
 
 --test signal
 --aluo<=alu_out;
 --rso<=rs_out;
 --rto<=rt_out;
 --dmo<=data_out;
+--insto<=inst;
+--counter<=pc_out;
 
 end Behavioral;
 

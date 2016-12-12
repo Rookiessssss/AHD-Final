@@ -13,7 +13,7 @@ end pc32bit;
 architecture Behavioral of pc32bit is
 
 begin
-PROCESS(clk,clr)BEGIN
+PROCESS(clk,clr,jinst)BEGIN
   IF(clr='0')THEN dout<=(OTHERS => '0');
   ELSIF (jinst = "001") THEN dout<=x"00000000";
   ELSIF (jinst = "010") THEN dout<=x"00000040";
