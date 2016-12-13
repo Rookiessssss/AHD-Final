@@ -15,9 +15,10 @@ PORT(
 		switch: IN STD_LOGIC_VECTOR(5 DOWNTO 0);
 		an : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
 		seg : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-		--test signal
+		--din
+		sw_in : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+		din_ctl : IN STD_LOGIC;
 		counter: OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
-      --aluo, rso, rto, dmo,insto: OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
 );
 end top_module;
 
@@ -118,7 +119,6 @@ SIGNAL clr_rf: STD_LOGIC;
 
 SIGNAL rdin: STD_LOGIC_VECTOR(4 DOWNTO 0);
 
-
 SIGNAL data_out: STD_LOGIC_VECTOR(31 DOWNTO 0);
 
 
@@ -128,8 +128,9 @@ SIGNAL inst : STD_LOGIC_VECTOR(31 DOWNTO 0);
 
 SIGNAL clr_rf_in: STD_LOGIC;
 
-
-
+--din
+SIGNAL din : STD_LOGIC_VECTOR(31 DOWNTO 0);
+SIGNAL dm_out : STD_LOGIC_VECTOR(31 DOWNTO 0);
 
 --SSD 
 signal clk_div: STD_LOGIC_VECTOR(19 DOWNTO 0);
@@ -139,11 +140,32 @@ signal sdout: STD_LOGIC_VECTOR(31 DOWNTO 0);
 
 --slow clk
 signal clk25mhz: STD_LOGIC;
-
 signal clk: STD_LOGIC;
 
 begin
+
+pc: pc32bit PORT MAP(clr=>clr, clk=>clk, din=>haltmux_out,jinst=>jinst, dout=>pc_out);
+
+decoder: decoder32bit PORT MAP(inst=>inst, jump=>jump, readwrite=>readwrite, 
+memtoreg=>memtoreg, regdst=>regdst, shiftlr=>shiftlr, alusrc=>alusrc, func=>func, 
+memread=>memread, memwrite=>memwrite, halt=>halt);
+
+rf: rf32x32 PORT MAP(clk=>clk,clr=>clr_rf, readwrite=>readwrite, rs=>inst(25 DOWNTO 21), rd=>rdin, rt=>inst(20 DOWNTO 16), 
+datain=>smux_out, rs_data=>rs_out, rt_data=>rt_out);
+
+alu: alu32bit PORT MAP(din0=>rs_out, din1=>alusrc_out, func=>func, dout=>alu_out);
+
+shift: shift32bit PORT MAP(shiftlr=>inst(27),din=>rs_out, imm=>inst(15 DOWNTO 0), dout=>shift_out);
+
+mem: mem128x32 PORT MAP(addr=>alu_out, datain=>dm_out, switch=>switch, led_out=>sdout, memread=>memread, memwrite=>memwrite, dataout=>data_out,clk=>clk,clr=>clr);
+
+im : im256x32 PORT MAP(addr=>pc_out, inst=>inst);
+
+
+
+
 clk25mhz<= clk_div(1);
+
 --SSD
 s <= clk_div(19 DOWNTO 17);
 
@@ -157,19 +179,12 @@ PROCESS (clr, clk100mhz)  BEGIN
   END IF;
 END PROCESS;
 
-----single step
---PROCESS(st_btn, clk25mhz) BEGIN
---   IF(clr='0')then
---	   clk_os<='0';
---	ELSIF(clk25mhz'EVENT AND clk25mhz='1')THEN
---	   st_btn_bf<=st_btn;
---		IF(st_btn_bf='1' AND st_btn='0')THEN
---		clk_os<='1';
---		END IF;
---	ELSIF(clk25mhz'EVENT AND clk25mhz='0')THEN
---   clk_os<='0';
---	END IF;
---END PROCESS;
+
+--din
+din<=x"000000"&sw_in;
+WITH din_ctl SELECT
+dm_out<=rt_out WHEN '0',
+        din WHEN OTHERS;
 
 
 
@@ -217,22 +232,6 @@ end case;
 end process;
 
 
-pc: pc32bit PORT MAP(clr=>clr, clk=>clk, din=>haltmux_out,jinst=>jinst, dout=>pc_out);
-
-decoder: decoder32bit PORT MAP(inst=>inst, jump=>jump, readwrite=>readwrite, 
-memtoreg=>memtoreg, regdst=>regdst, shiftlr=>shiftlr, alusrc=>alusrc, func=>func, 
-memread=>memread, memwrite=>memwrite, halt=>halt);
-
-rf: rf32x32 PORT MAP(clk=>clk,clr=>clr_rf, readwrite=>readwrite, rs=>inst(25 DOWNTO 21), rd=>rdin, rt=>inst(20 DOWNTO 16), 
-datain=>smux_out, rs_data=>rs_out, rt_data=>rt_out);
-
-alu: alu32bit PORT MAP(din0=>rs_out, din1=>alusrc_out, func=>func, dout=>alu_out);
-
-shift: shift32bit PORT MAP(shiftlr=>inst(27),din=>rs_out, imm=>inst(15 DOWNTO 0), dout=>shift_out);
-
-mem: mem128x32 PORT MAP(addr=>alu_out, datain=>rt_out, switch=>switch, led_out=>sdout, memread=>memread, memwrite=>memwrite, dataout=>data_out,clk=>clk,clr=>clr);
-
-im : im256x32 PORT MAP(addr=>pc_out, inst=>inst);
 
 adder1_out<=pc_out+'1';
 adderi_out<=imm_out+adder1_out;
@@ -324,12 +323,6 @@ clr_rf_in<='1' WHEN "010",
 --only clear registers file
 clr_rf <= clr AND (NOT clr_rf_in);
 
---test signal
---aluo<=alu_out;
---rso<=rs_out; 
---rto<=rt_out;
---dmo<=data_out;
---insto<=inst;
 counter<=pc_out(7 DOWNTO 0);
 
 end Behavioral;
