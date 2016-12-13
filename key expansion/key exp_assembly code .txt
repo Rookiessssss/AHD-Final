@@ -48,6 +48,6 @@ subi $10,$10,26
 loop 4:bne $11,$14,loop5
 subi $11,$11,4
 loop 5:bne $12,$15,loop2
-halt
+hal
 
 
