@@ -1,0 +1,3 @@
+We shouldn't add an extra hardware function to only clear RF, because this will cause hardware timing problem. If the first instruction involves reading and storing on the same instruction register. Like addi $15,$15,31 where it reads from $15 and then stores back to $15. This kind of instruction, if it's at the beginning of the instructions set, will be executed multiple times, since button pressing down has a very long duration compared to clk. 
+
+In conclusion, to solve this problem, we need implement a method to only allow hardware to execute once on the first instruction after jintr buttons pressed. Or we can add an intermidiate instruction, to make sure when we press jump, it won't jump to an instruction like addi $15,$15,31 .
