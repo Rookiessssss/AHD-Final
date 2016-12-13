@@ -6,8 +6,9 @@ entity top_module is
 PORT( 
       clr: IN STD_LOGIC;
       clk100mhz: IN STD_LOGIC;
-		--only clear registers file
---		clr_rf_in: IN STD_LOGIC;
+		--single stepping
+		st_btn : IN STD_LOGIC;
+		stp_sw :IN STD_LOGIC;
 		--jump to key,enc,dec
 		jinst: IN STD_LOGIC_VECTOR(2 DOWNTO 0);
 		--switches for LED output
@@ -16,13 +17,10 @@ PORT(
 		seg : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
 		--test signal
 		counter: OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
---		aluo, rso, rto,dmo,insto: OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
-		
-		--this is for IM 
-	   --rs,rt,rd: IN STD_LOGIC_VECTOR(4 DOWNTO 0)--should be removed later
-		
+      --aluo, rso, rto, dmo,insto: OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
 );
 end top_module;
+
 
 architecture Behavioral of top_module is
 
@@ -131,6 +129,8 @@ SIGNAL inst : STD_LOGIC_VECTOR(31 DOWNTO 0);
 SIGNAL clr_rf_in: STD_LOGIC;
 
 
+
+
 --SSD 
 signal clk_div: STD_LOGIC_VECTOR(19 DOWNTO 0);
 signal ac: STD_LOGIC_VECTOR(3 DOWNTO 0);
@@ -138,10 +138,12 @@ signal s:STD_LOGIC_VECTOR(2 DOWNTO 0);
 signal sdout: STD_LOGIC_VECTOR(31 DOWNTO 0);
 
 --slow clk
+signal clk25mhz: STD_LOGIC;
+
 signal clk: STD_LOGIC;
 
 begin
-clk<= clk_div(2);
+clk25mhz<= clk_div(1);
 --SSD
 s <= clk_div(19 DOWNTO 17);
 
@@ -154,6 +156,27 @@ PROCESS (clr, clk100mhz)  BEGIN
 	END IF;
   END IF;
 END PROCESS;
+
+----single step
+--PROCESS(st_btn, clk25mhz) BEGIN
+--   IF(clr='0')then
+--	   clk_os<='0';
+--	ELSIF(clk25mhz'EVENT AND clk25mhz='1')THEN
+--	   st_btn_bf<=st_btn;
+--		IF(st_btn_bf='1' AND st_btn='0')THEN
+--		clk_os<='1';
+--		END IF;
+--	ELSIF(clk25mhz'EVENT AND clk25mhz='0')THEN
+--   clk_os<='0';
+--	END IF;
+--END PROCESS;
+
+
+
+
+WITH stp_sw SELECT
+clk<=clk25mhz WHEN '0',
+     st_btn   WHEN OTHERS;
 
 --output control
 process(s, sdout)
