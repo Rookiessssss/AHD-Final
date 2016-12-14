@@ -22,7 +22,7 @@ ARCHITECTURE behavior OF finfpga_tb IS
          switch : IN  std_logic_vector(5 downto 0);
          sw_in : IN  std_logic_vector(7 downto 0);
          din_ctl : IN  std_logic;
-         —-the output of this testbench is seven segment display and pc 	
+         --the output of this testbench is seven segment display and pc 	
          an : OUT  std_logic_vector(7 downto 0);
          seg : OUT  std_logic_vector(7 downto 0);
          counter : OUT  std_logic_vector(7 downto 0)
@@ -95,16 +95,15 @@ BEGIN
 		jinst<="010"; 
 		wait for 100 ns;
 		jinst<="000";
-                switch <="100011”;
-		
+		switch <="100011";
 		
 		wait for 500000 ns;
 		--dec
 		jinst<="100";
 		wait for 100 ns;
 		jinst<="000";
-                switch <="100100”;
-
+      switch <="100100";
+		
       wait for clk100mhz_period*10;
 
       -- insert stimulus here 
