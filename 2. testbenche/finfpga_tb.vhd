@@ -1,30 +1,3 @@
---------------------------------------------------------------------------------
--- Company: 
--- Engineer:
---
--- Create Date:   14:00:00 12/13/2016
--- Design Name:   
--- Module Name:   C:/lab/finfpga/finfpga_tb.vhd
--- Project Name:  finfpga
--- Target Device:  
--- Tool versions:  
--- Description:   
--- 
--- VHDL Test Bench Created by ISE for module: top_module
--- 
--- Dependencies:
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
---
--- Notes: 
--- This testbench has been automatically generated using types std_logic and
--- std_logic_vector for the ports of the unit under test.  Xilinx recommends
--- that these types always be used for the top-level I/O of a design in order
--- to guarantee that the testbench will bind correctly to the post-implementation 
--- simulation model.
---------------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
  
@@ -47,10 +20,11 @@ ARCHITECTURE behavior OF finfpga_tb IS
          stp_sw : IN  std_logic;
          jinst : IN  std_logic_vector(2 downto 0);
          switch : IN  std_logic_vector(5 downto 0);
-         an : OUT  std_logic_vector(7 downto 0);
-         seg : OUT  std_logic_vector(7 downto 0);
          sw_in : IN  std_logic_vector(7 downto 0);
          din_ctl : IN  std_logic;
+         —-the output of this testbench is seven segment display and pc 	
+         an : OUT  std_logic_vector(7 downto 0);
+         seg : OUT  std_logic_vector(7 downto 0);
          counter : OUT  std_logic_vector(7 downto 0)
         );
     END COMPONENT;
@@ -103,7 +77,8 @@ BEGIN
 
    -- Stimulus process
    stim_proc: process
-   begin		
+   begin	
+
          clr <= '0';
          st_btn <='0';
          stp_sw <='0';
@@ -114,6 +89,19 @@ BEGIN
 
       wait for 100 ns;	
 		clr<='1';
+		wait for 500000 ns;
+
+		--enc 
+		jinst<="010"; 
+		wait for 100 ns;
+		jinst<="000";
+		
+		
+		wait for 500000 ns;
+		--dec
+		jinst<="100";
+		wait for 100 ns;
+		jinst<="000";
 
       wait for clk100mhz_period*10;
 
