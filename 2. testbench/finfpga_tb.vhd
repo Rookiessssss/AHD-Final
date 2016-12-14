@@ -95,6 +95,7 @@ BEGIN
 		jinst<="010"; 
 		wait for 100 ns;
 		jinst<="000";
+                switch <="100011”;
 		
 		
 		wait for 500000 ns;
@@ -102,6 +103,7 @@ BEGIN
 		jinst<="100";
 		wait for 100 ns;
 		jinst<="000";
+                switch <="100100”;
 
       wait for clk100mhz_period*10;
 
